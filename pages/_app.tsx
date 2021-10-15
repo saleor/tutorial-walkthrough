@@ -1,7 +1,17 @@
-import '../styles/globals.css'
 import type { AppProps } from 'next/app'
+import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+import 'tailwindcss/tailwind.css'
+
+const client = new ApolloClient({
+  uri: "https://vercel.saleor.cloud/graphql/",
+  cache: new InMemoryCache(),
+});
+
+export default function MyApp({ Component, pageProps }: AppProps) {
+  return (
+    <ApolloProvider client={client}>
+      <Component {...pageProps} />
+    </ApolloProvider>
+  )
 }
-export default MyApp

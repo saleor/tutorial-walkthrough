@@ -1,4 +1,3 @@
-import type { NextPage } from 'next'
 import React from 'react'
 
 import { 
@@ -6,7 +5,7 @@ import {
   Layout 
 } from '@/components';
 
-const Home: NextPage = () => {
+const Home = () => {
   return (
     <Layout>
       <ProductCollection />

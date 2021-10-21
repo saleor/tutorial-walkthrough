@@ -12648,18 +12648,25 @@ export type _Service = {
   sdl?: Maybe<Scalars['String']>;
 };
 
-export type First10ProductNamesQueryVariables = Exact<{ [key: string]: never; }>;
+export type FetchTwelveProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type First10ProductNamesQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', name: string } }> } | null | undefined };
+export type FetchTwelveProductsQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, thumbnail?: { __typename?: 'Image', url: string } | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined } }> } | null | undefined };
 
 
-export const First10ProductNamesDocument = gql`
-    query First10ProductNames {
-  products(first: 10, channel: "default-channel") {
+export const FetchTwelveProductsDocument = gql`
+    query FetchTwelveProducts {
+  products(first: 12, channel: "default-channel") {
     edges {
       node {
+        id
         name
+        thumbnail {
+          url
+        }
+        category {
+          name
+        }
       }
     }
   }
@@ -12667,31 +12674,31 @@ export const First10ProductNamesDocument = gql`
     `;
 
 /**
- * __useFirst10ProductNamesQuery__
+ * __useFetchTwelveProductsQuery__
  *
- * To run a query within a React component, call `useFirst10ProductNamesQuery` and pass it any options that fit your needs.
- * When your component renders, `useFirst10ProductNamesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useFetchTwelveProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchTwelveProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useFirst10ProductNamesQuery({
+ * const { data, loading, error } = useFetchTwelveProductsQuery({
  *   variables: {
  *   },
  * });
  */
-export function useFirst10ProductNamesQuery(baseOptions?: Apollo.QueryHookOptions<First10ProductNamesQuery, First10ProductNamesQueryVariables>) {
+export function useFetchTwelveProductsQuery(baseOptions?: Apollo.QueryHookOptions<FetchTwelveProductsQuery, FetchTwelveProductsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<First10ProductNamesQuery, First10ProductNamesQueryVariables>(First10ProductNamesDocument, options);
+        return Apollo.useQuery<FetchTwelveProductsQuery, FetchTwelveProductsQueryVariables>(FetchTwelveProductsDocument, options);
       }
-export function useFirst10ProductNamesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<First10ProductNamesQuery, First10ProductNamesQueryVariables>) {
+export function useFetchTwelveProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchTwelveProductsQuery, FetchTwelveProductsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<First10ProductNamesQuery, First10ProductNamesQueryVariables>(First10ProductNamesDocument, options);
+          return Apollo.useLazyQuery<FetchTwelveProductsQuery, FetchTwelveProductsQueryVariables>(FetchTwelveProductsDocument, options);
         }
-export type First10ProductNamesQueryHookResult = ReturnType<typeof useFirst10ProductNamesQuery>;
-export type First10ProductNamesLazyQueryHookResult = ReturnType<typeof useFirst10ProductNamesLazyQuery>;
-export type First10ProductNamesQueryResult = Apollo.QueryResult<First10ProductNamesQuery, First10ProductNamesQueryVariables>;
+export type FetchTwelveProductsQueryHookResult = ReturnType<typeof useFetchTwelveProductsQuery>;
+export type FetchTwelveProductsLazyQueryHookResult = ReturnType<typeof useFetchTwelveProductsLazyQuery>;
+export type FetchTwelveProductsQueryResult = Apollo.QueryResult<FetchTwelveProductsQuery, FetchTwelveProductsQueryVariables>;
 export type AccountAddressCreateKeySpecifier = ('accountErrors' | 'address' | 'errors' | 'user' | AccountAddressCreateKeySpecifier)[];
 export type AccountAddressCreateFieldPolicy = {
 	accountErrors?: FieldPolicy<any> | FieldReadFunction<any>,

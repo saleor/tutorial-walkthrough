@@ -1,9 +1,0 @@
-query First10ProductNames {
-  products(first: 10, channel: "default-channel") {
-    edges {
-      node {
-        name
-      }
-    }
-  }
-}

@@ -1,5 +1,5 @@
-query FetchTwelveProducts {
-  products(first: 12, channel: "default-channel") {
+query FetchTwelveProducts($after: String) {
+  products(first: 4, channel: "default-channel", after: $after) {
     edges {
       node {
         id
@@ -12,5 +12,12 @@ query FetchTwelveProducts {
         }
       }
     }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
   }
 }

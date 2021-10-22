@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 const styles = {
   card: 'bg-white border',
@@ -18,15 +19,17 @@ type Props = Pick<Product, 'id' | 'name' | 'thumbnail' | 'category'>;
 export const ProductElement = ({ id, name, thumbnail, category }: Props) => {
   return (
     <li key={id} className={styles.card}>
-      <a>
-        <div className={styles.image.aspect}>
-          <img src={thumbnail?.url} alt="" className={styles.image.content} />
-        </div>
-        <div className={styles.summary}>
-          <p className={styles.title}>{name}</p>
-          <p className={styles.category}>{category?.name}</p>
-        </div>
-      </a>
+      <Link href={`/product/${id}`}>
+        <a>
+          <div className={styles.image.aspect}>
+            <img src={thumbnail?.url} alt="" className={styles.image.content} />
+          </div>
+          <div className={styles.summary}>
+            <p className={styles.title}>{name}</p>
+            <p className={styles.category}>{category?.name}</p>
+          </div>
+        </a>
+      </Link>
     </li>
   );
 }

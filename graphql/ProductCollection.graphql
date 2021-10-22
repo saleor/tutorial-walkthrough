@@ -1,4 +1,4 @@
-query FetchTwelveProducts($after: String) {
+query ProductCollection($after: String) {
   products(first: 4, channel: "default-channel", after: $after) {
     edges {
       node {

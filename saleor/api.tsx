@@ -12648,16 +12648,66 @@ export type _Service = {
   sdl?: Maybe<Scalars['String']>;
 };
 
-export type FetchTwelveProductsQueryVariables = Exact<{
+export type ProductByIdQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type ProductByIdQuery = { __typename?: 'Query', product?: { __typename?: 'Product', id: string, name: string, description?: any | null | undefined, media?: Array<{ __typename?: 'ProductMedia', url: string }> | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined } | null | undefined };
+
+export type ProductCollectionQueryVariables = Exact<{
   after?: Maybe<Scalars['String']>;
 }>;
 
 
-export type FetchTwelveProductsQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', totalCount?: number | null | undefined, edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, thumbnail?: { __typename?: 'Image', url: string } | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null | undefined, endCursor?: string | null | undefined } } | null | undefined };
+export type ProductCollectionQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', totalCount?: number | null | undefined, edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, thumbnail?: { __typename?: 'Image', url: string } | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null | undefined, endCursor?: string | null | undefined } } | null | undefined };
 
 
-export const FetchTwelveProductsDocument = gql`
-    query FetchTwelveProducts($after: String) {
+export const ProductByIdDocument = gql`
+    query ProductByID($id: ID!) {
+  product(id: $id, channel: "default-channel") {
+    id
+    name
+    description
+    media {
+      url
+    }
+    category {
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useProductByIdQuery__
+ *
+ * To run a query within a React component, call `useProductByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useProductByIdQuery(baseOptions: Apollo.QueryHookOptions<ProductByIdQuery, ProductByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProductByIdQuery, ProductByIdQueryVariables>(ProductByIdDocument, options);
+      }
+export function useProductByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductByIdQuery, ProductByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProductByIdQuery, ProductByIdQueryVariables>(ProductByIdDocument, options);
+        }
+export type ProductByIdQueryHookResult = ReturnType<typeof useProductByIdQuery>;
+export type ProductByIdLazyQueryHookResult = ReturnType<typeof useProductByIdLazyQuery>;
+export type ProductByIdQueryResult = Apollo.QueryResult<ProductByIdQuery, ProductByIdQueryVariables>;
+export const ProductCollectionDocument = gql`
+    query ProductCollection($after: String) {
   products(first: 4, channel: "default-channel", after: $after) {
     edges {
       node {
@@ -12683,32 +12733,32 @@ export const FetchTwelveProductsDocument = gql`
     `;
 
 /**
- * __useFetchTwelveProductsQuery__
+ * __useProductCollectionQuery__
  *
- * To run a query within a React component, call `useFetchTwelveProductsQuery` and pass it any options that fit your needs.
- * When your component renders, `useFetchTwelveProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useProductCollectionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductCollectionQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useFetchTwelveProductsQuery({
+ * const { data, loading, error } = useProductCollectionQuery({
  *   variables: {
  *      after: // value for 'after'
  *   },
  * });
  */
-export function useFetchTwelveProductsQuery(baseOptions?: Apollo.QueryHookOptions<FetchTwelveProductsQuery, FetchTwelveProductsQueryVariables>) {
+export function useProductCollectionQuery(baseOptions?: Apollo.QueryHookOptions<ProductCollectionQuery, ProductCollectionQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<FetchTwelveProductsQuery, FetchTwelveProductsQueryVariables>(FetchTwelveProductsDocument, options);
+        return Apollo.useQuery<ProductCollectionQuery, ProductCollectionQueryVariables>(ProductCollectionDocument, options);
       }
-export function useFetchTwelveProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchTwelveProductsQuery, FetchTwelveProductsQueryVariables>) {
+export function useProductCollectionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductCollectionQuery, ProductCollectionQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<FetchTwelveProductsQuery, FetchTwelveProductsQueryVariables>(FetchTwelveProductsDocument, options);
+          return Apollo.useLazyQuery<ProductCollectionQuery, ProductCollectionQueryVariables>(ProductCollectionDocument, options);
         }
-export type FetchTwelveProductsQueryHookResult = ReturnType<typeof useFetchTwelveProductsQuery>;
-export type FetchTwelveProductsLazyQueryHookResult = ReturnType<typeof useFetchTwelveProductsLazyQuery>;
-export type FetchTwelveProductsQueryResult = Apollo.QueryResult<FetchTwelveProductsQuery, FetchTwelveProductsQueryVariables>;
+export type ProductCollectionQueryHookResult = ReturnType<typeof useProductCollectionQuery>;
+export type ProductCollectionLazyQueryHookResult = ReturnType<typeof useProductCollectionLazyQuery>;
+export type ProductCollectionQueryResult = Apollo.QueryResult<ProductCollectionQuery, ProductCollectionQueryVariables>;
 export type AccountAddressCreateKeySpecifier = ('accountErrors' | 'address' | 'errors' | 'user' | AccountAddressCreateKeySpecifier)[];
 export type AccountAddressCreateFieldPolicy = {
 	accountErrors?: FieldPolicy<any> | FieldReadFunction<any>,

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Product, useFetchTwelveProductsQuery } from '@/saleor/api';
+import { Product, useProductCollectionQuery } from '@/saleor/api';
 import { Pagination, ProductElement } from '@/components';
 
 const styles = {
@@ -8,7 +8,7 @@ const styles = {
 }
 
 export const ProductCollection = () => {
-  const { loading, error, data, fetchMore } = useFetchTwelveProductsQuery();
+  const { loading, error, data, fetchMore } = useProductCollectionQuery();
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error</p>;

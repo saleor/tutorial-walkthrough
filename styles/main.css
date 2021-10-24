@@ -5,3 +5,7 @@
 .button {
   @apply inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md text-gray-700 bg-gray-50 hover:border-blue-300 cursor-pointer;
 }
+
+.link {
+  @apply text-sm text-blue-600 hover:text-blue-500;
+}

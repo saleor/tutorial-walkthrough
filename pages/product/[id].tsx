@@ -1,7 +1,10 @@
-import { GetStaticProps } from "next";
+import { GetStaticProps, InferGetStaticPropsType } from "next";
+import { useRouter } from "next/router";
+import { useLocalStorage } from "react-use";
 
 import {
   useProductByIdQuery,
+  useAddProductVariantToCartMutation,
   ProductCollectionDocument,
   ProductCollectionQuery
 } from "@/saleor/api";
@@ -23,18 +26,24 @@ const styles = {
   }
 }
 
-interface Props {
-  id: string;
-}
-
-const ProductPage = ({ id }: Props) => {
+const ProductPage = ({ id }: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const router = useRouter();
+  const [token] = useLocalStorage('token');
   const { loading, error, data } = useProductByIdQuery({ variables: { id } });
+  const [addProductToCart] = useAddProductVariantToCartMutation();
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error</p>;
 
   if (data) {
     const { product } = data;
+
+    const onAddToCart = async () => {
+      await addProductToCart({
+        variables: { checkoutToken: token, variantId: product?.variants![0]?.id! },
+      });
+      router.push("/cart");
+    };
 
     return (
       <Layout>
@@ -59,6 +68,13 @@ const ProductPage = ({ id }: Props) => {
             <article className={styles.details.description}>
               {product?.description}
             </article>
+            <button
+              onClick={onAddToCart}
+              type="submit"
+              className="primary-button"
+            >
+              Add to cart
+            </button>
           </div>
         </div>
       </Layout>

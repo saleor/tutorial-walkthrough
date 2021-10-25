@@ -6,3 +6,5 @@ export { Navbar } from './Navbar';
 export { CartHeader } from './CartHeader';
 export { CartList } from './CartList';
 export { CartSummary } from './CartSummary';
+export { ProductDetails } from './ProductDetails';
+export { VariantSelector } from './VariantSelector';

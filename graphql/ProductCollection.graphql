@@ -1,5 +1,5 @@
-query ProductCollection($after: String) {
-  products(first: 4, channel: "default-channel", after: $after) {
+query ProductCollection($first: Int = 4, $after: String) {
+  products(first: $first, channel: "default-channel", after: $after) {
     edges {
       node {
         id
@@ -9,6 +9,20 @@ query ProductCollection($after: String) {
         }
         category {
           name
+        }
+        pricing {
+          priceRange {
+            start {
+              gross {
+                amount
+              }
+            }
+            stop {
+              gross {
+                amount
+              }
+            }
+          }
         }
       }
     }

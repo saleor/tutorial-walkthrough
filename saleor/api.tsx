@@ -12678,11 +12678,12 @@ export type ProductByIdQueryVariables = Exact<{
 export type ProductByIdQuery = { __typename?: 'Query', product?: { __typename?: 'Product', id: string, name: string, description?: any | null | undefined, media?: Array<{ __typename?: 'ProductMedia', url: string }> | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined, variants?: Array<{ __typename?: 'ProductVariant', id: string, name: string } | null | undefined> | null | undefined } | null | undefined };
 
 export type ProductCollectionQueryVariables = Exact<{
+  first?: Maybe<Scalars['Int']>;
   after?: Maybe<Scalars['String']>;
 }>;
 
 
-export type ProductCollectionQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', totalCount?: number | null | undefined, edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, thumbnail?: { __typename?: 'Image', url: string } | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null | undefined, endCursor?: string | null | undefined } } | null | undefined };
+export type ProductCollectionQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', totalCount?: number | null | undefined, edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, thumbnail?: { __typename?: 'Image', url: string } | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined, pricing?: { __typename?: 'ProductPricingInfo', priceRange?: { __typename?: 'TaxedMoneyRange', start?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } } | null | undefined, stop?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } } | null | undefined } | null | undefined } | null | undefined } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null | undefined, endCursor?: string | null | undefined } } | null | undefined };
 
 export const CheckoutFragmentDoc = gql`
     fragment CheckoutFragment on Checkout {
@@ -12899,8 +12900,8 @@ export type ProductByIdQueryHookResult = ReturnType<typeof useProductByIdQuery>;
 export type ProductByIdLazyQueryHookResult = ReturnType<typeof useProductByIdLazyQuery>;
 export type ProductByIdQueryResult = Apollo.QueryResult<ProductByIdQuery, ProductByIdQueryVariables>;
 export const ProductCollectionDocument = gql`
-    query ProductCollection($after: String) {
-  products(first: 4, channel: "default-channel", after: $after) {
+    query ProductCollection($first: Int = 4, $after: String) {
+  products(first: $first, channel: "default-channel", after: $after) {
     edges {
       node {
         id
@@ -12910,6 +12911,20 @@ export const ProductCollectionDocument = gql`
         }
         category {
           name
+        }
+        pricing {
+          priceRange {
+            start {
+              gross {
+                amount
+              }
+            }
+            stop {
+              gross {
+                amount
+              }
+            }
+          }
         }
       }
     }
@@ -12936,6 +12951,7 @@ export const ProductCollectionDocument = gql`
  * @example
  * const { data, loading, error } = useProductCollectionQuery({
  *   variables: {
+ *      first: // value for 'first'
  *      after: // value for 'after'
  *   },
  * });

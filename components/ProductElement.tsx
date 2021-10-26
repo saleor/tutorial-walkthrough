@@ -14,9 +14,12 @@ const styles = {
 
 import { Product } from '@/saleor/api'
 
-type Props = Pick<Product, 'id' | 'name' | 'thumbnail' | 'category'>;
+type Props = Pick<Product, 'id' | 'name' | 'thumbnail' | 'category' | 'pricing'>;
 
-export const ProductElement = ({ id, name, thumbnail, category }: Props) => {
+export const ProductElement = ({ id, name, thumbnail, category, pricing }: Props) => {
+  const lowestPrice = pricing?.priceRange?.start?.gross.amount ?? 0;
+  const highestPrice = pricing?.priceRange?.stop?.gross.amount ?? 0;
+
   return (
     <li key={id} className={styles.card}>
       <Link href={`/product/${id}`}>
@@ -25,8 +28,13 @@ export const ProductElement = ({ id, name, thumbnail, category }: Props) => {
             <img src={thumbnail?.url} alt="" className={styles.image.content} />
           </div>
           <div className={styles.summary}>
-            <p className={styles.title}>{name}</p>
-            <p className={styles.category}>{category?.name}</p>
+            <div className="flex justify-between items-center">
+              <div>
+                <p className={styles.title}>{name}</p>
+                <p className={styles.category}>{category?.name}</p>
+              </div>
+              <div>{lowestPrice == highestPrice ? highestPrice : `${lowestPrice} - ${highestPrice}`}</div>
+            </div>
           </div>
         </a>
       </Link>

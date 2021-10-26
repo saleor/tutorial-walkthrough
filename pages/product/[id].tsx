@@ -35,7 +35,10 @@ export default ProductPage;
 
 export async function getStaticPaths() {
   const { data } = await apolloClient.query<ProductCollectionQuery>({
-    query: ProductCollectionDocument
+    query: ProductCollectionDocument,
+    variables: {
+      first: 100,
+    }
   });
   const paths = data.products?.edges.map(({ node: { id } }) => ({
     params: { id },

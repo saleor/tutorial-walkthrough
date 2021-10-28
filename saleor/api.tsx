@@ -12675,7 +12675,7 @@ export type ProductByIdQueryVariables = Exact<{
 }>;
 
 
-export type ProductByIdQuery = { __typename?: 'Query', product?: { __typename?: 'Product', id: string, name: string, description?: any | null | undefined, media?: Array<{ __typename?: 'ProductMedia', url: string }> | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined, variants?: Array<{ __typename?: 'ProductVariant', id: string, name: string } | null | undefined> | null | undefined } | null | undefined };
+export type ProductByIdQuery = { __typename?: 'Query', product?: { __typename?: 'Product', id: string, name: string, description?: any | null | undefined, media?: Array<{ __typename?: 'ProductMedia', url: string }> | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined, variants?: Array<{ __typename?: 'ProductVariant', id: string, name: string, pricing?: { __typename?: 'VariantPricingInfo', price?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } } | null | undefined } | null | undefined } | null | undefined> | null | undefined } | null | undefined };
 
 export type ProductCollectionQueryVariables = Exact<{
   first?: Maybe<Scalars['Int']>;
@@ -12867,6 +12867,13 @@ export const ProductByIdDocument = gql`
     variants {
       id
       name
+      pricing {
+        price {
+          gross {
+            amount
+          }
+        }
+      }
     }
   }
 }

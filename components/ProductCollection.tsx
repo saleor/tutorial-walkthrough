@@ -1,25 +1,16 @@
 import React from 'react';
 
-import {
-  Product,
-  useFilterProductsQuery,
-  OrderDirection,
-  ProductOrderField
-} from '@/saleor/api';
-import { ProductElement } from '@/components';
+import { Product, useFilterProductsQuery } from '@/saleor/api';
+import { Pagination, ProductElement } from '@/components';
 
 const styles = {
   grid: 'grid gap-4 grid-cols-4',
 }
 
 export const ProductCollection = () => {
-  const { loading, error, data } = useFilterProductsQuery({
+  const { loading, error, data, fetchMore } = useFilterProductsQuery({
     variables: {
-      filter: { search: 'T-Shirt' },
-      sortBy: {
-        field: ProductOrderField.Name,
-        direction: OrderDirection.Desc
-      }
+      filter: {},
     }
   });
 
@@ -28,14 +19,33 @@ export const ProductCollection = () => {
 
   if (data) {
     const products = data.products?.edges || [];
+    const pageInfo = data.products?.pageInfo;
+    const totalCount = data.products?.totalCount;
+
+    const onLoadMore = () => {
+      fetchMore({
+        variables: {
+          after: pageInfo?.endCursor,
+        },
+      });
+    };
 
     return (
-      <ul role="list" className={styles.grid}>
-        {products?.length > 0 &&
-          products.map(
-            ({ node }) => <ProductElement key={node.id} {...node as Product} />,
-          )}
-      </ul>
+      <>
+        <ul role="list" className={styles.grid}>
+          {products?.length > 0 &&
+            products.map(
+              ({ node }) => <ProductElement key={node.id} {...node as Product} />,
+            )}
+        </ul>
+        {pageInfo?.hasNextPage &&
+          <Pagination
+            onLoadMore={onLoadMore}
+            itemCount={products.length}
+            totalCount={totalCount || NaN}
+          />
+        }
+      </>
     );
   }
 

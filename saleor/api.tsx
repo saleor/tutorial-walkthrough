@@ -12655,10 +12655,11 @@ export type FetchTwelveProductsQuery = { __typename?: 'Query', products?: { __ty
 export type FilterProductsQueryVariables = Exact<{
   filter: ProductFilterInput;
   sortBy?: Maybe<ProductOrder>;
+  after?: Maybe<Scalars['String']>;
 }>;
 
 
-export type FilterProductsQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, thumbnail?: { __typename?: 'Image', url: string } | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined } }> } | null | undefined };
+export type FilterProductsQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', totalCount?: number | null | undefined, edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, thumbnail?: { __typename?: 'Image', url: string } | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null | undefined, endCursor?: string | null | undefined } } | null | undefined };
 
 export type TShirtProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -12717,12 +12718,13 @@ export type FetchTwelveProductsQueryHookResult = ReturnType<typeof useFetchTwelv
 export type FetchTwelveProductsLazyQueryHookResult = ReturnType<typeof useFetchTwelveProductsLazyQuery>;
 export type FetchTwelveProductsQueryResult = Apollo.QueryResult<FetchTwelveProductsQuery, FetchTwelveProductsQueryVariables>;
 export const FilterProductsDocument = gql`
-    query FilterProducts($filter: ProductFilterInput!, $sortBy: ProductOrder) {
+    query FilterProducts($filter: ProductFilterInput!, $sortBy: ProductOrder, $after: String) {
   products(
-    first: 12
+    first: 4
     channel: "default-channel"
     filter: $filter
     sortBy: $sortBy
+    after: $after
   ) {
     edges {
       node {
@@ -12736,6 +12738,13 @@ export const FilterProductsDocument = gql`
         }
       }
     }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
   }
 }
     `;
@@ -12754,6 +12763,7 @@ export const FilterProductsDocument = gql`
  *   variables: {
  *      filter: // value for 'filter'
  *      sortBy: // value for 'sortBy'
+ *      after: // value for 'after'
  *   },
  * });
  */

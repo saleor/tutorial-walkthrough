@@ -1,9 +1,14 @@
-query FilterProducts($filter: ProductFilterInput!, $sortBy: ProductOrder) {
+query FilterProducts(
+  $filter: ProductFilterInput!
+  $sortBy: ProductOrder
+  $after: String
+) {
   products(
-    first: 12
+    first: 4
     channel: "default-channel"
     filter: $filter
     sortBy: $sortBy
+    after: $after
   ) {
     edges {
       node {
@@ -17,5 +22,12 @@ query FilterProducts($filter: ProductFilterInput!, $sortBy: ProductOrder) {
         }
       }
     }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
   }
 }

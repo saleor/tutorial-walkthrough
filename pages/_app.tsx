@@ -1,11 +1,10 @@
 import type { AppProps } from 'next/app'
-
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 
-import '../styles/globals.css'
+import '../styles/main.css';
 
 const client = new ApolloClient({
-  uri: "https://tutorial.saleor.cloud/graphql/",
+  uri: "https://vercel.saleor.cloud/graphql/",
   cache: new InMemoryCache(),
 });
 

@@ -55,5 +55,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     props: {
       id: params?.id,
     },
+    revalidate: 15,
   };
 };

@@ -12654,6 +12654,7 @@ export type FetchTwelveProductsQuery = { __typename?: 'Query', products?: { __ty
 
 export type FilterProductsQueryVariables = Exact<{
   filter: ProductFilterInput;
+  sortBy?: Maybe<ProductOrder>;
 }>;
 
 
@@ -12716,8 +12717,13 @@ export type FetchTwelveProductsQueryHookResult = ReturnType<typeof useFetchTwelv
 export type FetchTwelveProductsLazyQueryHookResult = ReturnType<typeof useFetchTwelveProductsLazyQuery>;
 export type FetchTwelveProductsQueryResult = Apollo.QueryResult<FetchTwelveProductsQuery, FetchTwelveProductsQueryVariables>;
 export const FilterProductsDocument = gql`
-    query FilterProducts($filter: ProductFilterInput!) {
-  products(first: 12, channel: "default-channel", filter: $filter) {
+    query FilterProducts($filter: ProductFilterInput!, $sortBy: ProductOrder) {
+  products(
+    first: 12
+    channel: "default-channel"
+    filter: $filter
+    sortBy: $sortBy
+  ) {
     edges {
       node {
         id
@@ -12747,6 +12753,7 @@ export const FilterProductsDocument = gql`
  * const { data, loading, error } = useFilterProductsQuery({
  *   variables: {
  *      filter: // value for 'filter'
+ *      sortBy: // value for 'sortBy'
  *   },
  * });
  */

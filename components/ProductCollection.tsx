@@ -1,6 +1,11 @@
 import React from 'react';
 
-import { Product, useFilterProductsQuery } from '@/saleor/api';
+import {
+  Product,
+  useFilterProductsQuery,
+  OrderDirection,
+  ProductOrderField
+} from '@/saleor/api';
 import { ProductElement } from '@/components';
 
 const styles = {
@@ -10,7 +15,11 @@ const styles = {
 export const ProductCollection = () => {
   const { loading, error, data } = useFilterProductsQuery({
     variables: {
-      filter: { search: 'T-Shirt' }
+      filter: { search: 'T-Shirt' },
+      sortBy: {
+        field: ProductOrderField.Name,
+        direction: OrderDirection.Desc
+      }
     }
   });
 

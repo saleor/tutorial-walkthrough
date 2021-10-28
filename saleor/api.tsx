@@ -12652,6 +12652,13 @@ export type FetchTwelveProductsQueryVariables = Exact<{ [key: string]: never; }>
 
 export type FetchTwelveProductsQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, thumbnail?: { __typename?: 'Image', url: string } | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined } }> } | null | undefined };
 
+export type FilterProductsQueryVariables = Exact<{
+  filter: ProductFilterInput;
+}>;
+
+
+export type FilterProductsQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, thumbnail?: { __typename?: 'Image', url: string } | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined } }> } | null | undefined };
+
 export type TShirtProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -12708,6 +12715,52 @@ export function useFetchTwelveProductsLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type FetchTwelveProductsQueryHookResult = ReturnType<typeof useFetchTwelveProductsQuery>;
 export type FetchTwelveProductsLazyQueryHookResult = ReturnType<typeof useFetchTwelveProductsLazyQuery>;
 export type FetchTwelveProductsQueryResult = Apollo.QueryResult<FetchTwelveProductsQuery, FetchTwelveProductsQueryVariables>;
+export const FilterProductsDocument = gql`
+    query FilterProducts($filter: ProductFilterInput!) {
+  products(first: 12, channel: "default-channel", filter: $filter) {
+    edges {
+      node {
+        id
+        name
+        thumbnail {
+          url
+        }
+        category {
+          name
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFilterProductsQuery__
+ *
+ * To run a query within a React component, call `useFilterProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFilterProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFilterProductsQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useFilterProductsQuery(baseOptions: Apollo.QueryHookOptions<FilterProductsQuery, FilterProductsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FilterProductsQuery, FilterProductsQueryVariables>(FilterProductsDocument, options);
+      }
+export function useFilterProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FilterProductsQuery, FilterProductsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FilterProductsQuery, FilterProductsQueryVariables>(FilterProductsDocument, options);
+        }
+export type FilterProductsQueryHookResult = ReturnType<typeof useFilterProductsQuery>;
+export type FilterProductsLazyQueryHookResult = ReturnType<typeof useFilterProductsLazyQuery>;
+export type FilterProductsQueryResult = Apollo.QueryResult<FilterProductsQuery, FilterProductsQueryVariables>;
 export const TShirtProductsDocument = gql`
     query TShirtProducts {
   products(first: 12, channel: "default-channel", filter: {search: "t-shirt"}) {

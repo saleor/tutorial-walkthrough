@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Product, useFetchTwelveProductsQuery } from '@/saleor/api';
+import { Product, useTShirtProductsQuery } from '@/saleor/api';
 import { ProductElement } from '@/components';
 
 const styles = {
@@ -8,7 +8,7 @@ const styles = {
 }
 
 export const ProductCollection = () => {
-  const { loading, error, data } = useFetchTwelveProductsQuery();
+  const { loading, error, data } = useTShirtProductsQuery();
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error</p>;

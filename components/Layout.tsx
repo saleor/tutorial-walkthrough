@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Navbar } from '@/components';
+
 interface Props {
   children: React.ReactNode;
 }
@@ -12,6 +14,7 @@ const styles = {
 export const Layout = ({ children }: Props) => {
   return (
     <div className={styles.background}>
+      <Navbar />
       <div className={styles.container}>
         {children}
       </div>

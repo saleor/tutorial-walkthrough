@@ -9,5 +9,9 @@ query ProductByID($id: ID!) {
     category {
       name
     }
+    variants {
+      id
+      name
+    }
   }
 }

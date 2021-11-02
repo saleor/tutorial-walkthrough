@@ -10,6 +10,7 @@ specifiers:
   '@graphql-codegen/typescript-react-apollo': ^3.1.6
   '@types/react': 17.0.30
   autoprefixer: ^10.4.0
+  clsx: ^1.1.1
   eslint: 8.0.1
   eslint-config-next: 11.1.2
   graphql: ^15.7.1
@@ -22,6 +23,7 @@ specifiers:
 
 dependencies:
   '@apollo/client': 3.4.16_graphql@15.7.1+react@17.0.2
+  clsx: 1.1.1
   graphql: 15.7.1
   next: 11.1.2_8e3522129ef2816b3c737f17aecb3a9d
   react: 17.0.2
@@ -2169,6 +2171,11 @@ packages:
     dependencies:
       mimic-response: 1.0.1
     dev: true
+
+  /clsx/1.1.1:
+    resolution: {integrity: sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==}
+    engines: {node: '>=6'}
+    dev: false
 
   /code-point-at/1.1.0:
     resolution: {integrity: sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=}

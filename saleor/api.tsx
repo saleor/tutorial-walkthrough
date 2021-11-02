@@ -12666,7 +12666,7 @@ export type ProductByIdQueryVariables = Exact<{
 }>;
 
 
-export type ProductByIdQuery = { __typename?: 'Query', product?: { __typename?: 'Product', id: string, name: string, description?: any | null | undefined, media?: Array<{ __typename?: 'ProductMedia', url: string }> | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined } | null | undefined };
+export type ProductByIdQuery = { __typename?: 'Query', product?: { __typename?: 'Product', id: string, name: string, description?: any | null | undefined, media?: Array<{ __typename?: 'ProductMedia', url: string }> | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined, variants?: Array<{ __typename?: 'ProductVariant', id: string, name: string } | null | undefined> | null | undefined } | null | undefined };
 
 export type TShirtProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -12795,6 +12795,10 @@ export const ProductByIdDocument = gql`
       url
     }
     category {
+      name
+    }
+    variants {
+      id
       name
     }
   }

@@ -12669,6 +12669,14 @@ export type CreateCheckoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type CreateCheckoutMutation = { __typename?: 'Mutation', checkoutCreate?: { __typename?: 'CheckoutCreate', checkout?: { __typename?: 'Checkout', token: any } | null | undefined, errors: Array<{ __typename?: 'CheckoutError', field?: string | null | undefined, code: CheckoutErrorCode }> } | null | undefined };
 
+export type RemoveProductFromCheckoutMutationVariables = Exact<{
+  checkoutToken: Scalars['UUID'];
+  lineId: Scalars['ID'];
+}>;
+
+
+export type RemoveProductFromCheckoutMutation = { __typename?: 'Mutation', checkoutLineDelete?: { __typename?: 'CheckoutLineDelete', checkout?: { __typename?: 'Checkout', id: string, email: string, lines?: Array<{ __typename?: 'CheckoutLine', id: string, totalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null | undefined, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: { __typename?: 'Image', url: string, alt?: string | null | undefined } | null | undefined }, pricing?: { __typename?: 'VariantPricingInfo', price?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null | undefined } | null | undefined } } | null | undefined> | null | undefined, totalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null | undefined } | null | undefined, errors: Array<{ __typename?: 'CheckoutError', message?: string | null | undefined }> } | null | undefined };
+
 export type FetchTwelveProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -12869,6 +12877,45 @@ export function useCreateCheckoutMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateCheckoutMutationHookResult = ReturnType<typeof useCreateCheckoutMutation>;
 export type CreateCheckoutMutationResult = Apollo.MutationResult<CreateCheckoutMutation>;
 export type CreateCheckoutMutationOptions = Apollo.BaseMutationOptions<CreateCheckoutMutation, CreateCheckoutMutationVariables>;
+export const RemoveProductFromCheckoutDocument = gql`
+    mutation RemoveProductFromCheckout($checkoutToken: UUID!, $lineId: ID!) {
+  checkoutLineDelete(token: $checkoutToken, lineId: $lineId) {
+    checkout {
+      ...CheckoutFragment
+    }
+    errors {
+      message
+    }
+  }
+}
+    ${CheckoutFragmentDoc}`;
+export type RemoveProductFromCheckoutMutationFn = Apollo.MutationFunction<RemoveProductFromCheckoutMutation, RemoveProductFromCheckoutMutationVariables>;
+
+/**
+ * __useRemoveProductFromCheckoutMutation__
+ *
+ * To run a mutation, you first call `useRemoveProductFromCheckoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveProductFromCheckoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeProductFromCheckoutMutation, { data, loading, error }] = useRemoveProductFromCheckoutMutation({
+ *   variables: {
+ *      checkoutToken: // value for 'checkoutToken'
+ *      lineId: // value for 'lineId'
+ *   },
+ * });
+ */
+export function useRemoveProductFromCheckoutMutation(baseOptions?: Apollo.MutationHookOptions<RemoveProductFromCheckoutMutation, RemoveProductFromCheckoutMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveProductFromCheckoutMutation, RemoveProductFromCheckoutMutationVariables>(RemoveProductFromCheckoutDocument, options);
+      }
+export type RemoveProductFromCheckoutMutationHookResult = ReturnType<typeof useRemoveProductFromCheckoutMutation>;
+export type RemoveProductFromCheckoutMutationResult = Apollo.MutationResult<RemoveProductFromCheckoutMutation>;
+export type RemoveProductFromCheckoutMutationOptions = Apollo.BaseMutationOptions<RemoveProductFromCheckoutMutation, RemoveProductFromCheckoutMutationVariables>;
 export const FetchTwelveProductsDocument = gql`
     query FetchTwelveProducts {
   products(first: 12, channel: "default-channel") {

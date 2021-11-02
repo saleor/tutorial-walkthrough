@@ -1,6 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
 
+import {
+  useRemoveProductFromCheckoutMutation,
+} from "@/saleor/api";
+
+import { useLocalStorage } from 'react-use';
 interface Props {
   products: any[];
 }
@@ -14,6 +19,9 @@ const styles = {
 }
 
 export const CartList = ({ products }: Props) => {
+  const [token] = useLocalStorage("token");
+  const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
+
   return (
     <ul role="list" className="divide-y divide-gray-200">
       {products.map((line) => {
@@ -42,6 +50,20 @@ export const CartList = ({ products }: Props) => {
                       <h4>
                         {variant?.name}
                       </h4>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          removeProductFromCheckout({
+                            variables: {
+                              checkoutToken: token,
+                              lineId: lineID,
+                            },
+                          })
+                        }
+                        className="ml-4 text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:ml-0 sm:mt-3"
+                      >
+                        <span>Remove</span>
+                      </button>
                     </div>
 
                     <p className="text-xl text-gray-900 text-right">

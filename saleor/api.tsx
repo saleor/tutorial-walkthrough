@@ -12647,6 +12647,14 @@ export type _Service = {
   sdl?: Maybe<Scalars['String']>;
 };
 
+export type AddProductVariantToCartMutationVariables = Exact<{
+  checkoutToken: Scalars['UUID'];
+  variantId: Scalars['ID'];
+}>;
+
+
+export type AddProductVariantToCartMutation = { __typename?: 'Mutation', checkoutLinesAdd?: { __typename?: 'CheckoutLinesAdd', checkout?: { __typename?: 'Checkout', id: string, lines?: Array<{ __typename?: 'CheckoutLine', id: string, quantity: number, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', name: string } } } | null | undefined> | null | undefined } | null | undefined, errors: Array<{ __typename?: 'CheckoutError', message?: string | null | undefined }> } | null | undefined };
+
 export type CreateCheckoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -12685,6 +12693,58 @@ export type ThreeProductsQueryVariables = Exact<{ [key: string]: never; }>;
 export type ThreeProductsQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string } }> } | null | undefined };
 
 
+export const AddProductVariantToCartDocument = gql`
+    mutation AddProductVariantToCart($checkoutToken: UUID!, $variantId: ID!) {
+  checkoutLinesAdd(
+    token: $checkoutToken
+    lines: [{quantity: 1, variantId: $variantId}]
+  ) {
+    checkout {
+      id
+      lines {
+        id
+        quantity
+        variant {
+          name
+          product {
+            name
+          }
+        }
+      }
+    }
+    errors {
+      message
+    }
+  }
+}
+    `;
+export type AddProductVariantToCartMutationFn = Apollo.MutationFunction<AddProductVariantToCartMutation, AddProductVariantToCartMutationVariables>;
+
+/**
+ * __useAddProductVariantToCartMutation__
+ *
+ * To run a mutation, you first call `useAddProductVariantToCartMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddProductVariantToCartMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addProductVariantToCartMutation, { data, loading, error }] = useAddProductVariantToCartMutation({
+ *   variables: {
+ *      checkoutToken: // value for 'checkoutToken'
+ *      variantId: // value for 'variantId'
+ *   },
+ * });
+ */
+export function useAddProductVariantToCartMutation(baseOptions?: Apollo.MutationHookOptions<AddProductVariantToCartMutation, AddProductVariantToCartMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddProductVariantToCartMutation, AddProductVariantToCartMutationVariables>(AddProductVariantToCartDocument, options);
+      }
+export type AddProductVariantToCartMutationHookResult = ReturnType<typeof useAddProductVariantToCartMutation>;
+export type AddProductVariantToCartMutationResult = Apollo.MutationResult<AddProductVariantToCartMutation>;
+export type AddProductVariantToCartMutationOptions = Apollo.BaseMutationOptions<AddProductVariantToCartMutation, AddProductVariantToCartMutationVariables>;
 export const CreateCheckoutDocument = gql`
     mutation CreateCheckout {
   checkoutCreate(

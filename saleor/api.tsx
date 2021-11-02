@@ -12647,6 +12647,11 @@ export type _Service = {
   sdl?: Maybe<Scalars['String']>;
 };
 
+export type CreateCheckoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CreateCheckoutMutation = { __typename?: 'Mutation', checkoutCreate?: { __typename?: 'CheckoutCreate', checkout?: { __typename?: 'Checkout', token: any } | null | undefined, errors: Array<{ __typename?: 'CheckoutError', field?: string | null | undefined, code: CheckoutErrorCode }> } | null | undefined };
+
 export type FetchTwelveProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -12680,6 +12685,46 @@ export type ThreeProductsQueryVariables = Exact<{ [key: string]: never; }>;
 export type ThreeProductsQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string } }> } | null | undefined };
 
 
+export const CreateCheckoutDocument = gql`
+    mutation CreateCheckout {
+  checkoutCreate(
+    input: {channel: "default-channel", email: "customer@example.com", lines: []}
+  ) {
+    checkout {
+      token
+    }
+    errors {
+      field
+      code
+    }
+  }
+}
+    `;
+export type CreateCheckoutMutationFn = Apollo.MutationFunction<CreateCheckoutMutation, CreateCheckoutMutationVariables>;
+
+/**
+ * __useCreateCheckoutMutation__
+ *
+ * To run a mutation, you first call `useCreateCheckoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCheckoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCheckoutMutation, { data, loading, error }] = useCreateCheckoutMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCreateCheckoutMutation(baseOptions?: Apollo.MutationHookOptions<CreateCheckoutMutation, CreateCheckoutMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCheckoutMutation, CreateCheckoutMutationVariables>(CreateCheckoutDocument, options);
+      }
+export type CreateCheckoutMutationHookResult = ReturnType<typeof useCreateCheckoutMutation>;
+export type CreateCheckoutMutationResult = Apollo.MutationResult<CreateCheckoutMutation>;
+export type CreateCheckoutMutationOptions = Apollo.BaseMutationOptions<CreateCheckoutMutation, CreateCheckoutMutationVariables>;
 export const FetchTwelveProductsDocument = gql`
     query FetchTwelveProducts {
   products(first: 12, channel: "default-channel") {

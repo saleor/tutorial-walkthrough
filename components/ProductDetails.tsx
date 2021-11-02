@@ -9,6 +9,8 @@ import {
   VariantSelector
 } from '@/components';
 
+import { formatAsMoney } from '@/lib';
+
 const styles = {
   columns: 'grid grid-cols-2 gap-x-10 items-start',
   image: {
@@ -33,6 +35,7 @@ export const ProductDetails = ({ product }: Props) => {
     ? router.query.variant?.toString()
     : undefined;
   const selectedVariantID = queryVariant || product?.variants![0]!.id!;
+  const selectedVariant = product?.variants!.find((variant) => variant?.id === selectedVariantID);
 
   return (
     <div className={styles.columns}>
@@ -58,6 +61,10 @@ export const ProductDetails = ({ product }: Props) => {
         </article>
 
         <VariantSelector variants={product?.variants || []} id={product.id} selectedVariantID={selectedVariantID} />
+
+        <div className="text-2xl font-bold">
+          {formatAsMoney(selectedVariant?.pricing?.price?.gross.amount)}
+        </div>
       </div>
     </div>
   );

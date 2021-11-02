@@ -12653,13 +12653,14 @@ export type FetchTwelveProductsQueryVariables = Exact<{ [key: string]: never; }>
 export type FetchTwelveProductsQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, thumbnail?: { __typename?: 'Image', url: string } | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined } }> } | null | undefined };
 
 export type FilterProductsQueryVariables = Exact<{
+  first?: Maybe<Scalars['Int']>;
   filter: ProductFilterInput;
   sortBy?: Maybe<ProductOrder>;
   after?: Maybe<Scalars['String']>;
 }>;
 
 
-export type FilterProductsQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', totalCount?: number | null | undefined, edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, thumbnail?: { __typename?: 'Image', url: string } | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null | undefined, endCursor?: string | null | undefined } } | null | undefined };
+export type FilterProductsQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', totalCount?: number | null | undefined, edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, thumbnail?: { __typename?: 'Image', url: string } | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined, pricing?: { __typename?: 'ProductPricingInfo', priceRange?: { __typename?: 'TaxedMoneyRange', start?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } } | null | undefined, stop?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } } | null | undefined } | null | undefined } | null | undefined } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null | undefined, endCursor?: string | null | undefined } } | null | undefined };
 
 export type ProductByIdQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -12667,6 +12668,14 @@ export type ProductByIdQueryVariables = Exact<{
 
 
 export type ProductByIdQuery = { __typename?: 'Query', product?: { __typename?: 'Product', id: string, name: string, description?: any | null | undefined, media?: Array<{ __typename?: 'ProductMedia', url: string }> | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined, variants?: Array<{ __typename?: 'ProductVariant', id: string, name: string } | null | undefined> | null | undefined } | null | undefined };
+
+export type ProductCollectionQueryVariables = Exact<{
+  first?: Maybe<Scalars['Int']>;
+  after?: Maybe<Scalars['String']>;
+}>;
+
+
+export type ProductCollectionQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', totalCount?: number | null | undefined, edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, thumbnail?: { __typename?: 'Image', url: string } | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined, pricing?: { __typename?: 'ProductPricingInfo', priceRange?: { __typename?: 'TaxedMoneyRange', start?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } } | null | undefined, stop?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } } | null | undefined } | null | undefined } | null | undefined } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null | undefined, endCursor?: string | null | undefined } } | null | undefined };
 
 export type TShirtProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -12725,9 +12734,9 @@ export type FetchTwelveProductsQueryHookResult = ReturnType<typeof useFetchTwelv
 export type FetchTwelveProductsLazyQueryHookResult = ReturnType<typeof useFetchTwelveProductsLazyQuery>;
 export type FetchTwelveProductsQueryResult = Apollo.QueryResult<FetchTwelveProductsQuery, FetchTwelveProductsQueryVariables>;
 export const FilterProductsDocument = gql`
-    query FilterProducts($filter: ProductFilterInput!, $sortBy: ProductOrder, $after: String) {
+    query FilterProducts($first: Int = 4, $filter: ProductFilterInput!, $sortBy: ProductOrder, $after: String) {
   products(
-    first: 4
+    first: $first
     channel: "default-channel"
     filter: $filter
     sortBy: $sortBy
@@ -12742,6 +12751,20 @@ export const FilterProductsDocument = gql`
         }
         category {
           name
+        }
+        pricing {
+          priceRange {
+            start {
+              gross {
+                amount
+              }
+            }
+            stop {
+              gross {
+                amount
+              }
+            }
+          }
         }
       }
     }
@@ -12768,6 +12791,7 @@ export const FilterProductsDocument = gql`
  * @example
  * const { data, loading, error } = useFilterProductsQuery({
  *   variables: {
+ *      first: // value for 'first'
  *      filter: // value for 'filter'
  *      sortBy: // value for 'sortBy'
  *      after: // value for 'after'
@@ -12832,6 +12856,74 @@ export function useProductByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type ProductByIdQueryHookResult = ReturnType<typeof useProductByIdQuery>;
 export type ProductByIdLazyQueryHookResult = ReturnType<typeof useProductByIdLazyQuery>;
 export type ProductByIdQueryResult = Apollo.QueryResult<ProductByIdQuery, ProductByIdQueryVariables>;
+export const ProductCollectionDocument = gql`
+    query ProductCollection($first: Int = 4, $after: String) {
+  products(first: $first, channel: "default-channel", after: $after) {
+    edges {
+      node {
+        id
+        name
+        thumbnail {
+          url
+        }
+        category {
+          name
+        }
+        pricing {
+          priceRange {
+            start {
+              gross {
+                amount
+              }
+            }
+            stop {
+              gross {
+                amount
+              }
+            }
+          }
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+    `;
+
+/**
+ * __useProductCollectionQuery__
+ *
+ * To run a query within a React component, call `useProductCollectionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductCollectionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductCollectionQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function useProductCollectionQuery(baseOptions?: Apollo.QueryHookOptions<ProductCollectionQuery, ProductCollectionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProductCollectionQuery, ProductCollectionQueryVariables>(ProductCollectionDocument, options);
+      }
+export function useProductCollectionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductCollectionQuery, ProductCollectionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProductCollectionQuery, ProductCollectionQueryVariables>(ProductCollectionDocument, options);
+        }
+export type ProductCollectionQueryHookResult = ReturnType<typeof useProductCollectionQuery>;
+export type ProductCollectionLazyQueryHookResult = ReturnType<typeof useProductCollectionLazyQuery>;
+export type ProductCollectionQueryResult = Apollo.QueryResult<ProductCollectionQuery, ProductCollectionQueryVariables>;
 export const TShirtProductsDocument = gql`
     query TShirtProducts {
   products(first: 12, channel: "default-channel", filter: {search: "t-shirt"}) {

@@ -12647,6 +12647,8 @@ export type _Service = {
   sdl?: Maybe<Scalars['String']>;
 };
 
+export type CheckoutFragment = { __typename?: 'Checkout', id: string, email: string, lines?: Array<{ __typename?: 'CheckoutLine', id: string, totalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null | undefined, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: { __typename?: 'Image', url: string, alt?: string | null | undefined } | null | undefined }, pricing?: { __typename?: 'VariantPricingInfo', price?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null | undefined } | null | undefined } } | null | undefined> | null | undefined, totalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null | undefined };
+
 export type AddProductVariantToCartMutationVariables = Exact<{
   checkoutToken: Scalars['UUID'];
   variantId: Scalars['ID'];
@@ -12654,6 +12656,13 @@ export type AddProductVariantToCartMutationVariables = Exact<{
 
 
 export type AddProductVariantToCartMutation = { __typename?: 'Mutation', checkoutLinesAdd?: { __typename?: 'CheckoutLinesAdd', checkout?: { __typename?: 'Checkout', id: string, lines?: Array<{ __typename?: 'CheckoutLine', id: string, quantity: number, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', name: string } } } | null | undefined> | null | undefined } | null | undefined, errors: Array<{ __typename?: 'CheckoutError', message?: string | null | undefined }> } | null | undefined };
+
+export type CheckoutByTokenQueryVariables = Exact<{
+  checkoutToken: Scalars['UUID'];
+}>;
+
+
+export type CheckoutByTokenQuery = { __typename?: 'Query', checkout?: { __typename?: 'Checkout', id: string, email: string, lines?: Array<{ __typename?: 'CheckoutLine', id: string, totalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null | undefined, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: { __typename?: 'Image', url: string, alt?: string | null | undefined } | null | undefined }, pricing?: { __typename?: 'VariantPricingInfo', price?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null | undefined } | null | undefined } } | null | undefined> | null | undefined, totalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null | undefined } | null | undefined };
 
 export type CreateCheckoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -12692,7 +12701,47 @@ export type ThreeProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ThreeProductsQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string } }> } | null | undefined };
 
-
+export const CheckoutFragmentDoc = gql`
+    fragment CheckoutFragment on Checkout {
+  id
+  email
+  lines {
+    id
+    totalPrice {
+      gross {
+        amount
+        currency
+      }
+    }
+    variant {
+      product {
+        id
+        name
+        slug
+        thumbnail {
+          url
+          alt
+        }
+      }
+      pricing {
+        price {
+          gross {
+            amount
+            currency
+          }
+        }
+      }
+      name
+    }
+  }
+  totalPrice {
+    gross {
+      amount
+      currency
+    }
+  }
+}
+    `;
 export const AddProductVariantToCartDocument = gql`
     mutation AddProductVariantToCart($checkoutToken: UUID!, $variantId: ID!) {
   checkoutLinesAdd(
@@ -12745,6 +12794,41 @@ export function useAddProductVariantToCartMutation(baseOptions?: Apollo.Mutation
 export type AddProductVariantToCartMutationHookResult = ReturnType<typeof useAddProductVariantToCartMutation>;
 export type AddProductVariantToCartMutationResult = Apollo.MutationResult<AddProductVariantToCartMutation>;
 export type AddProductVariantToCartMutationOptions = Apollo.BaseMutationOptions<AddProductVariantToCartMutation, AddProductVariantToCartMutationVariables>;
+export const CheckoutByTokenDocument = gql`
+    query CheckoutByToken($checkoutToken: UUID!) {
+  checkout(token: $checkoutToken) {
+    ...CheckoutFragment
+  }
+}
+    ${CheckoutFragmentDoc}`;
+
+/**
+ * __useCheckoutByTokenQuery__
+ *
+ * To run a query within a React component, call `useCheckoutByTokenQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCheckoutByTokenQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCheckoutByTokenQuery({
+ *   variables: {
+ *      checkoutToken: // value for 'checkoutToken'
+ *   },
+ * });
+ */
+export function useCheckoutByTokenQuery(baseOptions: Apollo.QueryHookOptions<CheckoutByTokenQuery, CheckoutByTokenQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CheckoutByTokenQuery, CheckoutByTokenQueryVariables>(CheckoutByTokenDocument, options);
+      }
+export function useCheckoutByTokenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CheckoutByTokenQuery, CheckoutByTokenQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CheckoutByTokenQuery, CheckoutByTokenQueryVariables>(CheckoutByTokenDocument, options);
+        }
+export type CheckoutByTokenQueryHookResult = ReturnType<typeof useCheckoutByTokenQuery>;
+export type CheckoutByTokenLazyQueryHookResult = ReturnType<typeof useCheckoutByTokenLazyQuery>;
+export type CheckoutByTokenQueryResult = Apollo.QueryResult<CheckoutByTokenQuery, CheckoutByTokenQueryVariables>;
 export const CreateCheckoutDocument = gql`
     mutation CreateCheckout {
   checkoutCreate(

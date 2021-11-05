@@ -4,7 +4,7 @@ import { useLocalStorage } from "react-use";
 
 import {
   useAddProductVariantToCartMutation,
-  Product
+  ProductFragment
 } from "@/saleor/api";
 
 import {
@@ -27,10 +27,10 @@ const styles = {
 }
 
 interface Props {
-  product: Pick<Product, 'id' | 'name' | 'description' | 'thumbnail' | 'category' | 'media' | 'variants'>;
+  product: ProductFragment 
 }
 
-export const ProductDetails = ({ product }: Props) => {
+export const ProductDetails = ({ product: { id, name, description, category, variants, media } }: Props) => {
   const router = useRouter();
   const [token] = useLocalStorage('token');
   const [addProductToCart] = useAddProductVariantToCartMutation();
@@ -38,8 +38,8 @@ export const ProductDetails = ({ product }: Props) => {
   const queryVariant = process.browser
     ? router.query.variant?.toString()
     : undefined;
-  const selectedVariantID = queryVariant || product?.variants![0]!.id!;
-  const selectedVariant = product?.variants!.find((variant) => variant?.id === selectedVariantID);
+  const selectedVariantID = queryVariant || variants![0]!.id!;
+  const selectedVariant = variants!.find((variant) => variant?.id === selectedVariantID);
 
   const onAddToCart = async () => {
     await addProductToCart({
@@ -52,7 +52,7 @@ export const ProductDetails = ({ product }: Props) => {
     <div className={styles.columns}>
       <div className={styles.image.aspect}>
         <img
-          src={product?.media![0]?.url}
+          src={media![0]?.url}
           className={styles.image.content}
         />
       </div>
@@ -60,18 +60,18 @@ export const ProductDetails = ({ product }: Props) => {
       <div className="space-y-8">
         <div>
           <h1 className={styles.details.title}>
-            {product?.name}
+            {name}
           </h1>
           <p className={styles.details.category}>
-            {product?.category?.name}
+            {category?.name}
           </p>
         </div>
 
         <article className={styles.details.description}>
-          {product?.description}
+          {description}
         </article>
 
-        <VariantSelector variants={product?.variants || []} id={product.id} selectedVariantID={selectedVariantID} />
+        <VariantSelector variants={variants || []} id={id} selectedVariantID={selectedVariantID} />
 
         <div className="text-2xl font-bold">
           {formatAsMoney(selectedVariant?.pricing?.price?.gross.amount)}

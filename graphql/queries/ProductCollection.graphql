@@ -1,0 +1,16 @@
+query ProductCollection($first: Int = 4, $after: String) {
+  products(first: $first, channel: "default-channel", after: $after) {
+    edges {
+      node {
+        ...ProductNodeFragment
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}

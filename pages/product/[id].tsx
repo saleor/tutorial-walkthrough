@@ -4,7 +4,6 @@ import {
   useProductByIdQuery,
   ProductCollectionDocument,
   ProductCollectionQuery,
-  Product
 } from "@/saleor/api";
 import { apolloClient } from "@/lib";
 import {
@@ -18,12 +17,12 @@ const ProductPage = ({ id }: InferGetStaticPropsType<typeof getStaticProps>) => 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error</p>;
 
-  if (data) {
+  if (data && data.product) { // @patrys
     const { product } = data;
 
     return (
       <Layout>
-        <ProductDetails product={product as Product} />
+        <ProductDetails product={product} />
       </Layout>
     );
   }

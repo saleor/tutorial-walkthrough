@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Product, useProductCollectionQuery } from '@/saleor/api';
+import { useProductCollectionQuery } from '@/saleor/api';
 import { Pagination, ProductElement } from '@/components';
 
 const styles = {
@@ -31,7 +31,7 @@ export const ProductCollection = () => {
         <ul role="list" className={styles.grid}>
           {products?.length > 0 &&
             products.map(
-              ({ node }) => <ProductElement key={node.id} {...node as Product} />,
+              ({ node }) => <ProductElement key={node.id} {...node} />,
             )}
         </ul>
         {pageInfo?.hasNextPage && 

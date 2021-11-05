@@ -2,9 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import clsx from 'clsx';
 
-import { ProductVariant } from '@/saleor/api'
-
-type Variant = Pick<ProductVariant, "id" | "name"> | null | undefined;
+import { VariantFragment } from '@/saleor/api'
 
 const styles = {
   grid: 'grid grid-cols-8 gap-2',
@@ -17,7 +15,7 @@ const styles = {
 interface Props {
   id: string;
   selectedVariantID: string;
-  variants: Variant[];
+  variants: (VariantFragment | null | undefined)[]; // @patrys
 }
 
 export const VariantSelector = ({ variants, id, selectedVariantID }: Props) => {

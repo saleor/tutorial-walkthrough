@@ -1,0 +1,24 @@
+fragment ProductNodeFragment on Product {
+  id
+  name
+  thumbnail {
+    url
+  }
+  category {
+    name
+  }
+  pricing {
+    priceRange {
+      start {
+        gross {
+          amount
+        }
+      }
+      stop {
+        gross {
+          amount
+        }
+      }
+    }
+  }
+}

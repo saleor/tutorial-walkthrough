@@ -1727,6 +1727,8 @@ export type CheckoutError = {
   code: CheckoutErrorCode;
   /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
   field?: Maybe<Scalars['String']>;
+  /** List of line Ids which cause the error. */
+  lines?: Maybe<Array<Scalars['ID']>>;
   /** The error message. */
   message?: Maybe<Scalars['String']>;
   /** List of varint IDs which causes the error. */
@@ -1824,6 +1826,14 @@ export type CheckoutLinesAdd = {
   checkout?: Maybe<Checkout>;
   /** @deprecated Use errors field instead. This field will be removed in Saleor 4.0. */
   checkoutErrors: Array<CheckoutError>;
+  errors: Array<CheckoutError>;
+};
+
+/** Deletes checkout lines. */
+export type CheckoutLinesDelete = {
+  __typename?: 'CheckoutLinesDelete';
+  /** An updated checkout. */
+  checkout?: Maybe<Checkout>;
   errors: Array<CheckoutError>;
 };
 
@@ -4998,10 +5008,15 @@ export type Mutation = {
   checkoutEmailUpdate?: Maybe<CheckoutEmailUpdate>;
   /** Update language code in the existing checkout. */
   checkoutLanguageCodeUpdate?: Maybe<CheckoutLanguageCodeUpdate>;
-  /** Deletes a CheckoutLine. */
+  /**
+   * Deletes a CheckoutLine.
+   * @deprecated DEPRECATED: Will be removed in Saleor 4.0. Use `checkoutLinesDelete` instead.
+   */
   checkoutLineDelete?: Maybe<CheckoutLineDelete>;
   /** Adds a checkout line to the existing checkout.If line was already in checkout, its quantity will be increased. */
   checkoutLinesAdd?: Maybe<CheckoutLinesAdd>;
+  /** Deletes checkout lines. */
+  checkoutLinesDelete?: Maybe<CheckoutLinesDelete>;
   /** Updates checkout line in the existing checkout. */
   checkoutLinesUpdate?: Maybe<CheckoutLinesUpdate>;
   /** Create a new payment for given checkout. */
@@ -5730,6 +5745,12 @@ export type MutationCheckoutLinesAddArgs = {
   checkoutId?: Maybe<Scalars['ID']>;
   lines: Array<Maybe<CheckoutLineInput>>;
   token?: Maybe<Scalars['UUID']>;
+};
+
+
+export type MutationCheckoutLinesDeleteArgs = {
+  linesIds: Array<Maybe<Scalars['ID']>>;
+  token: Scalars['UUID'];
 };
 
 
@@ -12641,12 +12662,20 @@ export enum WeightUnitsEnum {
   Tonne = 'TONNE'
 }
 
-export type _Entity = Address | App | Category | Collection | Group | PageType | Product | ProductImage | ProductMedia | ProductType | ProductVariant | User;
+export type _Entity = Address | App | Category | Collection | Group | PageType | Product | ProductMedia | ProductType | ProductVariant | User;
 
 export type _Service = {
   __typename?: '_Service';
   sdl?: Maybe<Scalars['String']>;
 };
+
+export type CheckoutFragment = { __typename?: 'Checkout', id: string, email: string, lines?: Array<{ __typename?: 'CheckoutLine', id: string, totalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null | undefined, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: { __typename?: 'Image', url: string } | null | undefined }, pricing?: { __typename?: 'VariantPricingInfo', price?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null | undefined } | null | undefined } } | null | undefined> | null | undefined, totalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null | undefined };
+
+export type ProductFragment = { __typename?: 'Product', id: string, name: string, description?: any | null | undefined, media?: Array<{ __typename?: 'ProductMedia', url: string }> | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined, variants?: Array<{ __typename?: 'ProductVariant', id: string, name: string, pricing?: { __typename?: 'VariantPricingInfo', price?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } } | null | undefined } | null | undefined } | null | undefined> | null | undefined };
+
+export type ProductNodeFragment = { __typename?: 'Product', id: string, name: string, thumbnail?: { __typename?: 'Image', url: string } | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined, pricing?: { __typename?: 'ProductPricingInfo', priceRange?: { __typename?: 'TaxedMoneyRange', start?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } } | null | undefined, stop?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } } | null | undefined } | null | undefined } | null | undefined };
+
+export type VariantFragment = { __typename?: 'ProductVariant', id: string, name: string, pricing?: { __typename?: 'VariantPricingInfo', price?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } } | null | undefined } | null | undefined };
 
 export type AddProductVariantToCartMutationVariables = Exact<{
   checkoutToken: Scalars['UUID'];
@@ -12656,19 +12685,17 @@ export type AddProductVariantToCartMutationVariables = Exact<{
 
 export type AddProductVariantToCartMutation = { __typename?: 'Mutation', checkoutLinesAdd?: { __typename?: 'CheckoutLinesAdd', checkout?: { __typename?: 'Checkout', id: string, lines?: Array<{ __typename?: 'CheckoutLine', id: string, quantity: number, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', name: string } } } | null | undefined> | null | undefined } | null | undefined, errors: Array<{ __typename?: 'CheckoutError', message?: string | null | undefined }> } | null | undefined };
 
+export type CreateCheckoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CreateCheckoutMutation = { __typename?: 'Mutation', checkoutCreate?: { __typename?: 'CheckoutCreate', checkout?: { __typename?: 'Checkout', token: any } | null | undefined, errors: Array<{ __typename?: 'CheckoutError', field?: string | null | undefined, code: CheckoutErrorCode }> } | null | undefined };
+
 export type CheckoutByTokenQueryVariables = Exact<{
   checkoutToken: Scalars['UUID'];
 }>;
 
 
 export type CheckoutByTokenQuery = { __typename?: 'Query', checkout?: { __typename?: 'Checkout', id: string, email: string, lines?: Array<{ __typename?: 'CheckoutLine', id: string, totalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null | undefined, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: { __typename?: 'Image', url: string } | null | undefined }, pricing?: { __typename?: 'VariantPricingInfo', price?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null | undefined } | null | undefined } } | null | undefined> | null | undefined, totalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null | undefined } | null | undefined };
-
-export type CheckoutFragment = { __typename?: 'Checkout', id: string, email: string, lines?: Array<{ __typename?: 'CheckoutLine', id: string, totalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null | undefined, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: { __typename?: 'Image', url: string } | null | undefined }, pricing?: { __typename?: 'VariantPricingInfo', price?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null | undefined } | null | undefined } } | null | undefined> | null | undefined, totalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null | undefined };
-
-export type CreateCheckoutMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type CreateCheckoutMutation = { __typename?: 'Mutation', checkoutCreate?: { __typename?: 'CheckoutCreate', checkout?: { __typename?: 'Checkout', token: any } | null | undefined, errors: Array<{ __typename?: 'CheckoutError', field?: string | null | undefined, code: CheckoutErrorCode }> } | null | undefined };
 
 export type ProductByIdQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -12725,6 +12752,61 @@ export const CheckoutFragmentDoc = gql`
   }
 }
     `;
+export const VariantFragmentDoc = gql`
+    fragment VariantFragment on ProductVariant {
+  id
+  name
+  pricing {
+    price {
+      gross {
+        amount
+      }
+    }
+  }
+}
+    `;
+export const ProductFragmentDoc = gql`
+    fragment ProductFragment on Product {
+  id
+  name
+  description
+  media {
+    url
+  }
+  category {
+    name
+  }
+  variants {
+    ...VariantFragment
+  }
+}
+    ${VariantFragmentDoc}`;
+export const ProductNodeFragmentDoc = gql`
+    fragment ProductNodeFragment on Product {
+  id
+  name
+  thumbnail {
+    url
+  }
+  category {
+    name
+  }
+  pricing {
+    priceRange {
+      start {
+        gross {
+          amount
+        }
+      }
+      stop {
+        gross {
+          amount
+        }
+      }
+    }
+  }
+}
+    `;
 export const AddProductVariantToCartDocument = gql`
     mutation AddProductVariantToCart($checkoutToken: UUID!, $variantId: ID!) {
   checkoutLinesAdd(
@@ -12777,41 +12859,6 @@ export function useAddProductVariantToCartMutation(baseOptions?: Apollo.Mutation
 export type AddProductVariantToCartMutationHookResult = ReturnType<typeof useAddProductVariantToCartMutation>;
 export type AddProductVariantToCartMutationResult = Apollo.MutationResult<AddProductVariantToCartMutation>;
 export type AddProductVariantToCartMutationOptions = Apollo.BaseMutationOptions<AddProductVariantToCartMutation, AddProductVariantToCartMutationVariables>;
-export const CheckoutByTokenDocument = gql`
-    query CheckoutByToken($checkoutToken: UUID!) {
-  checkout(token: $checkoutToken) {
-    ...CheckoutFragment
-  }
-}
-    ${CheckoutFragmentDoc}`;
-
-/**
- * __useCheckoutByTokenQuery__
- *
- * To run a query within a React component, call `useCheckoutByTokenQuery` and pass it any options that fit your needs.
- * When your component renders, `useCheckoutByTokenQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCheckoutByTokenQuery({
- *   variables: {
- *      checkoutToken: // value for 'checkoutToken'
- *   },
- * });
- */
-export function useCheckoutByTokenQuery(baseOptions: Apollo.QueryHookOptions<CheckoutByTokenQuery, CheckoutByTokenQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CheckoutByTokenQuery, CheckoutByTokenQueryVariables>(CheckoutByTokenDocument, options);
-      }
-export function useCheckoutByTokenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CheckoutByTokenQuery, CheckoutByTokenQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CheckoutByTokenQuery, CheckoutByTokenQueryVariables>(CheckoutByTokenDocument, options);
-        }
-export type CheckoutByTokenQueryHookResult = ReturnType<typeof useCheckoutByTokenQuery>;
-export type CheckoutByTokenLazyQueryHookResult = ReturnType<typeof useCheckoutByTokenLazyQuery>;
-export type CheckoutByTokenQueryResult = Apollo.QueryResult<CheckoutByTokenQuery, CheckoutByTokenQueryVariables>;
 export const CreateCheckoutDocument = gql`
     mutation CreateCheckout {
   checkoutCreate(
@@ -12852,32 +12899,48 @@ export function useCreateCheckoutMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateCheckoutMutationHookResult = ReturnType<typeof useCreateCheckoutMutation>;
 export type CreateCheckoutMutationResult = Apollo.MutationResult<CreateCheckoutMutation>;
 export type CreateCheckoutMutationOptions = Apollo.BaseMutationOptions<CreateCheckoutMutation, CreateCheckoutMutationVariables>;
+export const CheckoutByTokenDocument = gql`
+    query CheckoutByToken($checkoutToken: UUID!) {
+  checkout(token: $checkoutToken) {
+    ...CheckoutFragment
+  }
+}
+    ${CheckoutFragmentDoc}`;
+
+/**
+ * __useCheckoutByTokenQuery__
+ *
+ * To run a query within a React component, call `useCheckoutByTokenQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCheckoutByTokenQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCheckoutByTokenQuery({
+ *   variables: {
+ *      checkoutToken: // value for 'checkoutToken'
+ *   },
+ * });
+ */
+export function useCheckoutByTokenQuery(baseOptions: Apollo.QueryHookOptions<CheckoutByTokenQuery, CheckoutByTokenQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CheckoutByTokenQuery, CheckoutByTokenQueryVariables>(CheckoutByTokenDocument, options);
+      }
+export function useCheckoutByTokenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CheckoutByTokenQuery, CheckoutByTokenQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CheckoutByTokenQuery, CheckoutByTokenQueryVariables>(CheckoutByTokenDocument, options);
+        }
+export type CheckoutByTokenQueryHookResult = ReturnType<typeof useCheckoutByTokenQuery>;
+export type CheckoutByTokenLazyQueryHookResult = ReturnType<typeof useCheckoutByTokenLazyQuery>;
+export type CheckoutByTokenQueryResult = Apollo.QueryResult<CheckoutByTokenQuery, CheckoutByTokenQueryVariables>;
 export const ProductByIdDocument = gql`
     query ProductByID($id: ID!) {
   product(id: $id, channel: "default-channel") {
-    id
-    name
-    description
-    media {
-      url
-    }
-    category {
-      name
-    }
-    variants {
-      id
-      name
-      pricing {
-        price {
-          gross {
-            amount
-          }
-        }
-      }
-    }
+    ...ProductFragment
   }
 }
-    `;
+    ${ProductFragmentDoc}`;
 
 /**
  * __useProductByIdQuery__
@@ -12911,28 +12974,7 @@ export const ProductCollectionDocument = gql`
   products(first: $first, channel: "default-channel", after: $after) {
     edges {
       node {
-        id
-        name
-        thumbnail {
-          url
-        }
-        category {
-          name
-        }
-        pricing {
-          priceRange {
-            start {
-              gross {
-                amount
-              }
-            }
-            stop {
-              gross {
-                amount
-              }
-            }
-          }
-        }
+        ...ProductNodeFragment
       }
     }
     pageInfo {
@@ -12944,7 +12986,7 @@ export const ProductCollectionDocument = gql`
     totalCount
   }
 }
-    `;
+    ${ProductNodeFragmentDoc}`;
 
 /**
  * __useProductCollectionQuery__
@@ -13635,11 +13677,12 @@ export type CheckoutEmailUpdateFieldPolicy = {
 	checkoutErrors?: FieldPolicy<any> | FieldReadFunction<any>,
 	errors?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type CheckoutErrorKeySpecifier = ('addressType' | 'code' | 'field' | 'message' | 'variants' | CheckoutErrorKeySpecifier)[];
+export type CheckoutErrorKeySpecifier = ('addressType' | 'code' | 'field' | 'lines' | 'message' | 'variants' | CheckoutErrorKeySpecifier)[];
 export type CheckoutErrorFieldPolicy = {
 	addressType?: FieldPolicy<any> | FieldReadFunction<any>,
 	code?: FieldPolicy<any> | FieldReadFunction<any>,
 	field?: FieldPolicy<any> | FieldReadFunction<any>,
+	lines?: FieldPolicy<any> | FieldReadFunction<any>,
 	message?: FieldPolicy<any> | FieldReadFunction<any>,
 	variants?: FieldPolicy<any> | FieldReadFunction<any>
 };
@@ -13678,6 +13721,11 @@ export type CheckoutLinesAddKeySpecifier = ('checkout' | 'checkoutErrors' | 'err
 export type CheckoutLinesAddFieldPolicy = {
 	checkout?: FieldPolicy<any> | FieldReadFunction<any>,
 	checkoutErrors?: FieldPolicy<any> | FieldReadFunction<any>,
+	errors?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CheckoutLinesDeleteKeySpecifier = ('checkout' | 'errors' | CheckoutLinesDeleteKeySpecifier)[];
+export type CheckoutLinesDeleteFieldPolicy = {
+	checkout?: FieldPolicy<any> | FieldReadFunction<any>,
 	errors?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type CheckoutLinesUpdateKeySpecifier = ('checkout' | 'checkoutErrors' | 'errors' | CheckoutLinesUpdateKeySpecifier)[];
@@ -14526,7 +14574,7 @@ export type MoneyRangeFieldPolicy = {
 	start?: FieldPolicy<any> | FieldReadFunction<any>,
 	stop?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type MutationKeySpecifier = ('accountAddressCreate' | 'accountAddressDelete' | 'accountAddressUpdate' | 'accountDelete' | 'accountRegister' | 'accountRequestDeletion' | 'accountSetDefaultAddress' | 'accountUpdate' | 'addressCreate' | 'addressDelete' | 'addressSetDefault' | 'addressUpdate' | 'appActivate' | 'appCreate' | 'appDeactivate' | 'appDelete' | 'appDeleteFailedInstallation' | 'appFetchManifest' | 'appInstall' | 'appRetryInstall' | 'appTokenCreate' | 'appTokenDelete' | 'appTokenVerify' | 'appUpdate' | 'assignNavigation' | 'assignWarehouseShippingZone' | 'attributeBulkDelete' | 'attributeCreate' | 'attributeDelete' | 'attributeReorderValues' | 'attributeTranslate' | 'attributeUpdate' | 'attributeValueBulkDelete' | 'attributeValueCreate' | 'attributeValueDelete' | 'attributeValueTranslate' | 'attributeValueUpdate' | 'categoryBulkDelete' | 'categoryCreate' | 'categoryDelete' | 'categoryTranslate' | 'categoryUpdate' | 'channelActivate' | 'channelCreate' | 'channelDeactivate' | 'channelDelete' | 'channelUpdate' | 'checkoutAddPromoCode' | 'checkoutBillingAddressUpdate' | 'checkoutComplete' | 'checkoutCreate' | 'checkoutCustomerAttach' | 'checkoutCustomerDetach' | 'checkoutEmailUpdate' | 'checkoutLanguageCodeUpdate' | 'checkoutLineDelete' | 'checkoutLinesAdd' | 'checkoutLinesUpdate' | 'checkoutPaymentCreate' | 'checkoutRemovePromoCode' | 'checkoutShippingAddressUpdate' | 'checkoutShippingMethodUpdate' | 'collectionAddProducts' | 'collectionBulkDelete' | 'collectionChannelListingUpdate' | 'collectionCreate' | 'collectionDelete' | 'collectionRemoveProducts' | 'collectionReorderProducts' | 'collectionTranslate' | 'collectionUpdate' | 'confirmAccount' | 'confirmEmailChange' | 'createWarehouse' | 'customerBulkDelete' | 'customerCreate' | 'customerDelete' | 'customerUpdate' | 'deleteMetadata' | 'deletePrivateMetadata' | 'deleteWarehouse' | 'digitalContentCreate' | 'digitalContentDelete' | 'digitalContentUpdate' | 'digitalContentUrlCreate' | 'draftOrderBulkDelete' | 'draftOrderComplete' | 'draftOrderCreate' | 'draftOrderDelete' | 'draftOrderLinesBulkDelete' | 'draftOrderUpdate' | 'exportProducts' | 'externalAuthenticationUrl' | 'externalLogout' | 'externalObtainAccessTokens' | 'externalRefresh' | 'externalVerify' | 'fileUpload' | 'giftCardActivate' | 'giftCardCreate' | 'giftCardDeactivate' | 'giftCardUpdate' | 'invoiceCreate' | 'invoiceDelete' | 'invoiceRequest' | 'invoiceRequestDelete' | 'invoiceSendNotification' | 'invoiceUpdate' | 'menuBulkDelete' | 'menuCreate' | 'menuDelete' | 'menuItemBulkDelete' | 'menuItemCreate' | 'menuItemDelete' | 'menuItemMove' | 'menuItemTranslate' | 'menuItemUpdate' | 'menuUpdate' | 'orderAddNote' | 'orderBulkCancel' | 'orderCancel' | 'orderCapture' | 'orderConfirm' | 'orderDiscountAdd' | 'orderDiscountDelete' | 'orderDiscountUpdate' | 'orderFulfill' | 'orderFulfillmentCancel' | 'orderFulfillmentRefundProducts' | 'orderFulfillmentReturnProducts' | 'orderFulfillmentUpdateTracking' | 'orderLineDelete' | 'orderLineDiscountRemove' | 'orderLineDiscountUpdate' | 'orderLineUpdate' | 'orderLinesCreate' | 'orderMarkAsPaid' | 'orderRefund' | 'orderSettingsUpdate' | 'orderUpdate' | 'orderUpdateShipping' | 'orderVoid' | 'pageAttributeAssign' | 'pageAttributeUnassign' | 'pageBulkDelete' | 'pageBulkPublish' | 'pageCreate' | 'pageDelete' | 'pageReorderAttributeValues' | 'pageTranslate' | 'pageTypeBulkDelete' | 'pageTypeCreate' | 'pageTypeDelete' | 'pageTypeReorderAttributes' | 'pageTypeUpdate' | 'pageUpdate' | 'passwordChange' | 'paymentCapture' | 'paymentInitialize' | 'paymentRefund' | 'paymentVoid' | 'permissionGroupCreate' | 'permissionGroupDelete' | 'permissionGroupUpdate' | 'pluginUpdate' | 'productAttributeAssign' | 'productAttributeUnassign' | 'productBulkDelete' | 'productChannelListingUpdate' | 'productCreate' | 'productDelete' | 'productMediaBulkDelete' | 'productMediaCreate' | 'productMediaDelete' | 'productMediaReorder' | 'productMediaUpdate' | 'productReorderAttributeValues' | 'productTranslate' | 'productTypeBulkDelete' | 'productTypeCreate' | 'productTypeDelete' | 'productTypeReorderAttributes' | 'productTypeUpdate' | 'productUpdate' | 'productVariantBulkCreate' | 'productVariantBulkDelete' | 'productVariantChannelListingUpdate' | 'productVariantCreate' | 'productVariantDelete' | 'productVariantReorder' | 'productVariantReorderAttributeValues' | 'productVariantSetDefault' | 'productVariantStocksCreate' | 'productVariantStocksDelete' | 'productVariantStocksUpdate' | 'productVariantTranslate' | 'productVariantUpdate' | 'requestEmailChange' | 'requestPasswordReset' | 'saleBulkDelete' | 'saleCataloguesAdd' | 'saleCataloguesRemove' | 'saleChannelListingUpdate' | 'saleCreate' | 'saleDelete' | 'saleTranslate' | 'saleUpdate' | 'setPassword' | 'shippingMethodChannelListingUpdate' | 'shippingPriceBulkDelete' | 'shippingPriceCreate' | 'shippingPriceDelete' | 'shippingPriceExcludeProducts' | 'shippingPriceRemoveProductFromExclude' | 'shippingPriceTranslate' | 'shippingPriceUpdate' | 'shippingZoneBulkDelete' | 'shippingZoneCreate' | 'shippingZoneDelete' | 'shippingZoneUpdate' | 'shopAddressUpdate' | 'shopDomainUpdate' | 'shopFetchTaxRates' | 'shopSettingsTranslate' | 'shopSettingsUpdate' | 'staffBulkDelete' | 'staffCreate' | 'staffDelete' | 'staffNotificationRecipientCreate' | 'staffNotificationRecipientDelete' | 'staffNotificationRecipientUpdate' | 'staffUpdate' | 'tokenCreate' | 'tokenRefresh' | 'tokenVerify' | 'tokensDeactivateAll' | 'unassignWarehouseShippingZone' | 'updateMetadata' | 'updatePrivateMetadata' | 'updateWarehouse' | 'userAvatarDelete' | 'userAvatarUpdate' | 'userBulkSetActive' | 'variantMediaAssign' | 'variantMediaUnassign' | 'voucherBulkDelete' | 'voucherCataloguesAdd' | 'voucherCataloguesRemove' | 'voucherChannelListingUpdate' | 'voucherCreate' | 'voucherDelete' | 'voucherTranslate' | 'voucherUpdate' | 'webhookCreate' | 'webhookDelete' | 'webhookUpdate' | MutationKeySpecifier)[];
+export type MutationKeySpecifier = ('accountAddressCreate' | 'accountAddressDelete' | 'accountAddressUpdate' | 'accountDelete' | 'accountRegister' | 'accountRequestDeletion' | 'accountSetDefaultAddress' | 'accountUpdate' | 'addressCreate' | 'addressDelete' | 'addressSetDefault' | 'addressUpdate' | 'appActivate' | 'appCreate' | 'appDeactivate' | 'appDelete' | 'appDeleteFailedInstallation' | 'appFetchManifest' | 'appInstall' | 'appRetryInstall' | 'appTokenCreate' | 'appTokenDelete' | 'appTokenVerify' | 'appUpdate' | 'assignNavigation' | 'assignWarehouseShippingZone' | 'attributeBulkDelete' | 'attributeCreate' | 'attributeDelete' | 'attributeReorderValues' | 'attributeTranslate' | 'attributeUpdate' | 'attributeValueBulkDelete' | 'attributeValueCreate' | 'attributeValueDelete' | 'attributeValueTranslate' | 'attributeValueUpdate' | 'categoryBulkDelete' | 'categoryCreate' | 'categoryDelete' | 'categoryTranslate' | 'categoryUpdate' | 'channelActivate' | 'channelCreate' | 'channelDeactivate' | 'channelDelete' | 'channelUpdate' | 'checkoutAddPromoCode' | 'checkoutBillingAddressUpdate' | 'checkoutComplete' | 'checkoutCreate' | 'checkoutCustomerAttach' | 'checkoutCustomerDetach' | 'checkoutEmailUpdate' | 'checkoutLanguageCodeUpdate' | 'checkoutLineDelete' | 'checkoutLinesAdd' | 'checkoutLinesDelete' | 'checkoutLinesUpdate' | 'checkoutPaymentCreate' | 'checkoutRemovePromoCode' | 'checkoutShippingAddressUpdate' | 'checkoutShippingMethodUpdate' | 'collectionAddProducts' | 'collectionBulkDelete' | 'collectionChannelListingUpdate' | 'collectionCreate' | 'collectionDelete' | 'collectionRemoveProducts' | 'collectionReorderProducts' | 'collectionTranslate' | 'collectionUpdate' | 'confirmAccount' | 'confirmEmailChange' | 'createWarehouse' | 'customerBulkDelete' | 'customerCreate' | 'customerDelete' | 'customerUpdate' | 'deleteMetadata' | 'deletePrivateMetadata' | 'deleteWarehouse' | 'digitalContentCreate' | 'digitalContentDelete' | 'digitalContentUpdate' | 'digitalContentUrlCreate' | 'draftOrderBulkDelete' | 'draftOrderComplete' | 'draftOrderCreate' | 'draftOrderDelete' | 'draftOrderLinesBulkDelete' | 'draftOrderUpdate' | 'exportProducts' | 'externalAuthenticationUrl' | 'externalLogout' | 'externalObtainAccessTokens' | 'externalRefresh' | 'externalVerify' | 'fileUpload' | 'giftCardActivate' | 'giftCardCreate' | 'giftCardDeactivate' | 'giftCardUpdate' | 'invoiceCreate' | 'invoiceDelete' | 'invoiceRequest' | 'invoiceRequestDelete' | 'invoiceSendNotification' | 'invoiceUpdate' | 'menuBulkDelete' | 'menuCreate' | 'menuDelete' | 'menuItemBulkDelete' | 'menuItemCreate' | 'menuItemDelete' | 'menuItemMove' | 'menuItemTranslate' | 'menuItemUpdate' | 'menuUpdate' | 'orderAddNote' | 'orderBulkCancel' | 'orderCancel' | 'orderCapture' | 'orderConfirm' | 'orderDiscountAdd' | 'orderDiscountDelete' | 'orderDiscountUpdate' | 'orderFulfill' | 'orderFulfillmentCancel' | 'orderFulfillmentRefundProducts' | 'orderFulfillmentReturnProducts' | 'orderFulfillmentUpdateTracking' | 'orderLineDelete' | 'orderLineDiscountRemove' | 'orderLineDiscountUpdate' | 'orderLineUpdate' | 'orderLinesCreate' | 'orderMarkAsPaid' | 'orderRefund' | 'orderSettingsUpdate' | 'orderUpdate' | 'orderUpdateShipping' | 'orderVoid' | 'pageAttributeAssign' | 'pageAttributeUnassign' | 'pageBulkDelete' | 'pageBulkPublish' | 'pageCreate' | 'pageDelete' | 'pageReorderAttributeValues' | 'pageTranslate' | 'pageTypeBulkDelete' | 'pageTypeCreate' | 'pageTypeDelete' | 'pageTypeReorderAttributes' | 'pageTypeUpdate' | 'pageUpdate' | 'passwordChange' | 'paymentCapture' | 'paymentInitialize' | 'paymentRefund' | 'paymentVoid' | 'permissionGroupCreate' | 'permissionGroupDelete' | 'permissionGroupUpdate' | 'pluginUpdate' | 'productAttributeAssign' | 'productAttributeUnassign' | 'productBulkDelete' | 'productChannelListingUpdate' | 'productCreate' | 'productDelete' | 'productMediaBulkDelete' | 'productMediaCreate' | 'productMediaDelete' | 'productMediaReorder' | 'productMediaUpdate' | 'productReorderAttributeValues' | 'productTranslate' | 'productTypeBulkDelete' | 'productTypeCreate' | 'productTypeDelete' | 'productTypeReorderAttributes' | 'productTypeUpdate' | 'productUpdate' | 'productVariantBulkCreate' | 'productVariantBulkDelete' | 'productVariantChannelListingUpdate' | 'productVariantCreate' | 'productVariantDelete' | 'productVariantReorder' | 'productVariantReorderAttributeValues' | 'productVariantSetDefault' | 'productVariantStocksCreate' | 'productVariantStocksDelete' | 'productVariantStocksUpdate' | 'productVariantTranslate' | 'productVariantUpdate' | 'requestEmailChange' | 'requestPasswordReset' | 'saleBulkDelete' | 'saleCataloguesAdd' | 'saleCataloguesRemove' | 'saleChannelListingUpdate' | 'saleCreate' | 'saleDelete' | 'saleTranslate' | 'saleUpdate' | 'setPassword' | 'shippingMethodChannelListingUpdate' | 'shippingPriceBulkDelete' | 'shippingPriceCreate' | 'shippingPriceDelete' | 'shippingPriceExcludeProducts' | 'shippingPriceRemoveProductFromExclude' | 'shippingPriceTranslate' | 'shippingPriceUpdate' | 'shippingZoneBulkDelete' | 'shippingZoneCreate' | 'shippingZoneDelete' | 'shippingZoneUpdate' | 'shopAddressUpdate' | 'shopDomainUpdate' | 'shopFetchTaxRates' | 'shopSettingsTranslate' | 'shopSettingsUpdate' | 'staffBulkDelete' | 'staffCreate' | 'staffDelete' | 'staffNotificationRecipientCreate' | 'staffNotificationRecipientDelete' | 'staffNotificationRecipientUpdate' | 'staffUpdate' | 'tokenCreate' | 'tokenRefresh' | 'tokenVerify' | 'tokensDeactivateAll' | 'unassignWarehouseShippingZone' | 'updateMetadata' | 'updatePrivateMetadata' | 'updateWarehouse' | 'userAvatarDelete' | 'userAvatarUpdate' | 'userBulkSetActive' | 'variantMediaAssign' | 'variantMediaUnassign' | 'voucherBulkDelete' | 'voucherCataloguesAdd' | 'voucherCataloguesRemove' | 'voucherChannelListingUpdate' | 'voucherCreate' | 'voucherDelete' | 'voucherTranslate' | 'voucherUpdate' | 'webhookCreate' | 'webhookDelete' | 'webhookUpdate' | MutationKeySpecifier)[];
 export type MutationFieldPolicy = {
 	accountAddressCreate?: FieldPolicy<any> | FieldReadFunction<any>,
 	accountAddressDelete?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -14585,6 +14633,7 @@ export type MutationFieldPolicy = {
 	checkoutLanguageCodeUpdate?: FieldPolicy<any> | FieldReadFunction<any>,
 	checkoutLineDelete?: FieldPolicy<any> | FieldReadFunction<any>,
 	checkoutLinesAdd?: FieldPolicy<any> | FieldReadFunction<any>,
+	checkoutLinesDelete?: FieldPolicy<any> | FieldReadFunction<any>,
 	checkoutLinesUpdate?: FieldPolicy<any> | FieldReadFunction<any>,
 	checkoutPaymentCreate?: FieldPolicy<any> | FieldReadFunction<any>,
 	checkoutRemovePromoCode?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -17104,6 +17153,10 @@ export type StrictTypedTypePolicies = {
 	CheckoutLinesAdd?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | CheckoutLinesAddKeySpecifier | (() => undefined | CheckoutLinesAddKeySpecifier),
 		fields?: CheckoutLinesAddFieldPolicy,
+	},
+	CheckoutLinesDelete?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | CheckoutLinesDeleteKeySpecifier | (() => undefined | CheckoutLinesDeleteKeySpecifier),
+		fields?: CheckoutLinesDeleteFieldPolicy,
 	},
 	CheckoutLinesUpdate?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | CheckoutLinesUpdateKeySpecifier | (() => undefined | CheckoutLinesUpdateKeySpecifier),

@@ -1,0 +1,5 @@
+query ProductByID($id: ID!) {
+  product(id: $id, channel: "default-channel") {
+    ...ProductFragment
+  }
+}

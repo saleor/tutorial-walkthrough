@@ -1,6 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 
+import { 
+  ProductNodeFragment 
+} from '@/saleor/api'
+
 const styles = {
   card: 'bg-white border',
   summary: 'px-4 py-2 border-gray-100 bg-gray-50 border-t',
@@ -12,9 +16,7 @@ const styles = {
   }
 }
 
-import { Product } from '@/saleor/api'
-
-type Props = Pick<Product, 'id' | 'name' | 'thumbnail' | 'category' | 'pricing'>;
+type Props = ProductNodeFragment;
 
 export const ProductElement = ({ id, name, thumbnail, category, pricing }: Props) => {
   const lowestPrice = pricing?.priceRange?.start?.gross.amount ?? 0;

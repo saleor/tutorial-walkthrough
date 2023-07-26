@@ -1,0 +1,8 @@
+fragment PriceFragment on VariantPricingInfo {
+  price {
+    gross {
+      amount
+      currency
+    }
+  }
+}

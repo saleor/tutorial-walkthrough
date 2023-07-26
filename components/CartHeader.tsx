@@ -13,10 +13,8 @@ export const CartHeader = () => {
         Your Cart
       </h1>
       <div>
-        <Link href="/">
-          <a className="link">
-            Continue Shopping
-          </a>
+        <Link href="/" className="link">
+          Continue Shopping
         </Link>
       </div>
     </header>

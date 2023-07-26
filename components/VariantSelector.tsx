@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import clsx from 'clsx';
 
-import { VariantFragment } from '@/saleor/api'
+import { VariantFragmentFragment } from '@/gql/graphql'
 
 const styles = {
   grid: 'grid grid-cols-8 gap-2',
@@ -15,7 +15,7 @@ const styles = {
 interface Props {
   id: string;
   selectedVariantID: string;
-  variants: (VariantFragment | null | undefined)[]; // @patrys
+  variants: (VariantFragmentFragment | null | undefined)[]; // @patrys
 }
 
 export const VariantSelector = ({ variants, id, selectedVariantID }: Props) => {
@@ -32,10 +32,9 @@ export const VariantSelector = ({ variants, id, selectedVariantID }: Props) => {
             }}
             replace
             shallow
+            className={clsx(styles.variant.default, isSelected && styles.variant.selected)}
           >
-            <a className={clsx(styles.variant.default, isSelected && styles.variant.selected)}>
               {variant?.name}
-            </a>
           </Link>
         );
       })}

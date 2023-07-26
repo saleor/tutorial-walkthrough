@@ -1,46 +1,31 @@
 import React from 'react';
 
-import { useProductCollectionQuery } from '@/saleor/api';
-import { Pagination, ProductElement } from '@/components';
+import { ProductElement } from '@/components';
+import { ProductCollectionDocument } from '@/gql/graphql';
+import { execute } from '@/lib';
 
 const styles = {
   grid: 'grid gap-4 grid-cols-4',
 }
 
-export const ProductCollection = () => {
-  const { loading, error, data, fetchMore } = useProductCollectionQuery();
+export async function ProductCollection() {
+  const { products } = await execute({
+    query: ProductCollectionDocument,
+    variables: {
+      first: 4,
+    },
+    cache: 'no-store'
+  })
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error</p>;
-
-  if (data) {
-    const products = data.products?.edges || [];
-    const pageInfo = data.products?.pageInfo;
-    const totalCount = data.products?.totalCount;
-
-    const onLoadMore = () => {
-      fetchMore({
-        variables: {
-          after: pageInfo?.endCursor,
-        },
-      });
-    };
-
+  if (products) {
     return (
       <>
         <ul role="list" className={styles.grid}>
-          {products?.length > 0 &&
-            products.map(
+          {products.edges.length > 0 &&
+            products.edges.map(
               ({ node }) => <ProductElement key={node.id} {...node} />,
             )}
         </ul>
-        {pageInfo?.hasNextPage && 
-          <Pagination
-            onLoadMore={onLoadMore}
-            itemCount={products.length}
-            totalCount={totalCount || NaN}
-          />
-        }
       </>
     );
   }

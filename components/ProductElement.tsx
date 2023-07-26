@@ -1,9 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-
-import { 
-  ProductNodeFragment 
-} from '@/saleor/api'
+import Image from 'next/image';
 
 const styles = {
   card: 'bg-white border',
@@ -11,12 +8,12 @@ const styles = {
   title: 'block text-lg text-gray-900 truncate',
   category: 'block text-sm font-medium text-gray-500',
   image: {
-    aspect: 'aspect-h-1 aspect-w-1',
+    aspect: 'aspect-square',
     content: 'object-center object-cover'
   }
 }
 
-type Props = ProductNodeFragment;
+type Props = any;
 
 export const ProductElement = ({ id, name, thumbnail, category, pricing }: Props) => {
   const lowestPrice = pricing?.priceRange?.start?.gross.amount ?? 0;
@@ -24,21 +21,19 @@ export const ProductElement = ({ id, name, thumbnail, category, pricing }: Props
 
   return (
     <li key={id} className={styles.card}>
-      <Link href={`/product/${id}`}>
-        <a>
-          <div className={styles.image.aspect}>
-            <img src={thumbnail?.url} alt="" className={styles.image.content} />
-          </div>
-          <div className={styles.summary}>
-            <div className="flex justify-between items-center">
-              <div>
-                <p className={styles.title}>{name}</p>
-                <p className={styles.category}>{category?.name}</p>
-              </div>
-              <div>{lowestPrice == highestPrice ? highestPrice : `${lowestPrice} - ${highestPrice}`}</div>
+      <Link href={`/products/${id}`}>
+        <div className={styles.image.aspect}>
+          <Image src={thumbnail?.url} alt="" width={256} height={256} />
+        </div>
+        <div className={styles.summary}>
+          <div className="flex justify-between items-center">
+            <div>
+              <p className={styles.title}>{name}</p>
+              <p className={styles.category}>{category?.name}</p>
             </div>
+            <div>{lowestPrice == highestPrice ? highestPrice : `${lowestPrice} - ${highestPrice}`}</div>
           </div>
-        </a>
+        </div>
       </Link>
     </li>
   );

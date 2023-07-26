@@ -1,17 +1,10 @@
 import React from 'react';
-import { useRouter } from "next/router";
-import { useLocalStorage } from "react-use";
+import Image from 'next/image';
 
-import {
-  useAddProductVariantToCartMutation,
-  ProductFragment
-} from "@/saleor/api";
-
-import {
-  VariantSelector
-} from '@/components';
-
-import { formatAsMoney } from '@/lib';
+import { execute, formatAsMoney } from '@/lib';
+import { cookies } from 'next/headers';
+import { AddProductVariantToCartDocument, CreateCheckoutDocument } from '@/gql/graphql';
+import { redirect } from 'next/navigation';
 
 const styles = {
   columns: 'grid grid-cols-2 gap-x-10 items-start',
@@ -26,35 +19,46 @@ const styles = {
   }
 }
 
-interface Props {
-  product: ProductFragment 
-}
+export const ProductDetails = ({ product: { id, name, description, category, variants, media } }: any) => {
+ const selectedVariantID = variants![0]!.id!;
 
-export const ProductDetails = ({ product: { id, name, description, category, variants, media } }: Props) => {
-  const router = useRouter();
-  const [token] = useLocalStorage('token');
-  const [addProductToCart] = useAddProductVariantToCartMutation();
+  async function addToCart() {
+    'use server';
 
-  const queryVariant = process.browser
-    ? router.query.variant?.toString()
-    : undefined;
-  const selectedVariantID = queryVariant || variants![0]!.id!;
-  const selectedVariant = variants!.find((variant) => variant?.id === selectedVariantID);
+    let checkoutToken = cookies().get('checkout')?.value;
 
-  const onAddToCart = async () => {
-    await addProductToCart({
-      variables: { checkoutToken: token, variantId: selectedVariantID },
-    });
-    router.push("/cart");
+    if (!checkoutToken) {
+      const { checkoutCreate } = await execute({
+        query: CreateCheckoutDocument,
+      })
+
+      if (checkoutCreate && checkoutCreate.checkout) {
+        cookies().set('checkout', checkoutCreate.checkout.token);
+      }
+    }
+
+    checkoutToken = cookies().get('checkout')?.value;
+
+    await execute({
+      query: AddProductVariantToCartDocument,
+      variables: {
+        checkoutToken,
+        variantId: selectedVariantID,
+      }
+    })
+
+    redirect('/cart');
   };
 
   return (
     <div className={styles.columns}>
       <div className={styles.image.aspect}>
-        <img
+        <Image
           src={media![0]?.url}
-          className={styles.image.content}
-        />
+          width={1200}
+          height={1200}
+          className={styles.image.content} 
+          alt={''}        />
       </div>
 
       <div className="space-y-8">
@@ -71,19 +75,20 @@ export const ProductDetails = ({ product: { id, name, description, category, var
           {description}
         </article>
 
-        <VariantSelector variants={variants || []} id={id} selectedVariantID={selectedVariantID} />
+        {/* <VariantSelector variants={variants || []} id={id} selectedVariantID={selectedVariantID} /> */}
 
         <div className="text-2xl font-bold">
-          {formatAsMoney(selectedVariant?.pricing?.price?.gross.amount)}
+          {formatAsMoney(variants[0].pricing?.price?.gross.amount)}
         </div>
 
-        <button
-          onClick={onAddToCart}
-          type="submit"
-          className="primary-button"
-        >
-          Add to cart
-        </button>
+        <form action={addToCart}>
+          <button
+            type="submit"
+            className="primary-button"
+          >
+            Add to carts
+          </button>
+        </form>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface Props {
   products: any[];
@@ -22,10 +23,9 @@ export const CartList = ({ products }: Props) => {
 
         return (
           <li key={line?.id} className="py-6">
-            <Link href={`/products/${product?.slug}`}>
-              <a className="flex">
+            <Link href={`/products/${product?.slug}`} className="flex">
                 <div className={styles.product.image}>
-                  <img
+                  <Image
                     src={product?.thumbnail?.url || ""}
                     alt={product?.thumbnail?.alt || ""}
                   />
@@ -41,7 +41,6 @@ export const CartList = ({ products }: Props) => {
                     </h4>
                   </div>
                 </div>
-              </a>
             </Link>
           </li>
         );
